@@ -1,25 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Suspense, useState } from 'react';
 import './App.css';
+import { EditComponent } from "./components/EditComponent";
+import { ListComponent } from "./components/ListComponent";
+import { QueryCache, ReactQueryCacheProvider } from "react-query";
+
+const queryCache = new QueryCache()
 
 function App() {
+  const [userId, setUserId] = useState<number | null>(null);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ReactQueryCacheProvider queryCache={queryCache}>
+      <Suspense fallback={"loading..."}>
+        <div className="App">
+          qwe111
+          {userId ? <EditComponent
+            userId={userId}
+            onEditFinished={() => {
+              setUserId(null);
+            }
+            }/> : <ListComponent onUserSelected={setUserId}/>}
+        </div>
+      </Suspense>
+    </ReactQueryCacheProvider>
   );
 }
 
