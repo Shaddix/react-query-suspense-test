@@ -1,4 +1,9 @@
-# Getting Started with Create React App
+# Description
+This project is testing react-query with Suspense.
+At the beginning of v3 suspense queries were not auto-refreshed after component is remount.
+Example demonstrates loading a list of users, ability to edit them,  
+ 
+## Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

@@ -5,6 +5,8 @@ import { ListComponent } from "./components/ListComponent";
 import { QueryCache, ReactQueryCacheProvider } from "react-query";
 
 const queryCache = new QueryCache()
+const queryCache1 = new QueryCache()
+const queryCache2 = new QueryCache()
 
 function App() {
   const [userId, setUserId] = useState<number | null>(null);
@@ -18,7 +20,14 @@ function App() {
             onEditFinished={() => {
               setUserId(null);
             }
-            }/> : <ListComponent onUserSelected={setUserId}/>}
+            }/> : <>
+            <ReactQueryCacheProvider queryCache={queryCache1}>
+              <ListComponent useSuspense={true} onUserSelected={setUserId}/>
+            </ReactQueryCacheProvider>
+            <ReactQueryCacheProvider queryCache={queryCache2}>
+              <ListComponent useSuspense={false} onUserSelected={setUserId}/>
+            </ReactQueryCacheProvider>
+          </>}
         </div>
       </Suspense>
     </ReactQueryCacheProvider>

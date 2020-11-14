@@ -3,8 +3,11 @@ import { useUsersQuery } from "./query";
 
 export const ListComponent = (props: {
   onUserSelected: (userId: number) => void;
+  useSuspense: boolean;
 }) => {
-  const users = useUsersQuery();
+  const users = useUsersQuery({
+    suspense: props.useSuspense,
+  });
 
   return <div>
 
