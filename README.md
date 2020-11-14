@@ -1,7 +1,7 @@
 # Description
 This project is testing react-query with Suspense.
 At the beginning of v3 suspense queries were not auto-refreshed after component is remount.
-Example demonstrates loading a list of users, ability to edit them,  
+Example demonstrates loading a list of users, ability to edit them, and then go back to check if the list is updated or not (it wasn't updated at the beginning)  
  
 ## Getting Started with Create React App
 

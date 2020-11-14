@@ -1,9 +1,9 @@
 import axios from 'axios';
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { nameofFactory } from "../infrastructure/nameof";
-import { UserListDto, userListQueryId, usersUrl, useUserQuery } from "./query";
-import { useQueryCache } from "react-query";
+import { UserListDto, userListQueryId, userQueryId, usersUrl, useUserQuery } from "./query";
+import { useQueryClient } from "react-query";
 
 
 const nameof = nameofFactory<UserListDto>();
@@ -13,23 +13,33 @@ export const EditComponent = (props: {
   onEditFinished: () => void;
 }) => {
   const userInfo = useUserQuery(props.userId);
-  const queryCache = useQueryCache();
+  const queryClient = useQueryClient();
   const form = useForm<UserListDto>();
-  useEffect(()=>{
+  useEffect(() => {
     if (userInfo.data) {
       form.reset(userInfo.data);
     }
-  }, [userInfo.data])
+  }, [userInfo.data]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const submitHandler = async (data: UserListDto) => {
-    await axios.patch(usersUrl + '/' + props.userId, data, undefined);
-    console.log('qq');
-    await queryCache.invalidateQueries(userListQueryId);
-    props.onEditFinished();
+    setIsSubmitting(true);
+    try {
+      const d2 = await axios.patch(usersUrl + '/' + props.userId, data, undefined);
+      queryClient.setQueryData<UserListDto[]>(userListQueryId, oldData => {
+        const oldUser = oldData?.find(x => x.id === props.userId);
+        Object.assign(oldUser, data);
+        return oldData ?? [];
+      });
+      queryClient.setQueryData(userQueryId(props.userId), d2.data.data);
+      props.onEditFinished();
+    } finally {
+      setIsSubmitting(false);
+    }
   }
   return <form onSubmit={form.handleSubmit(submitHandler)}>
     <div><input name={nameof('name')} ref={form.register}/></div>
     <div>
-      <button type="submit" title={"OK"}>OK</button>
+      <button type="submit" >{isSubmitting ? "Saving..." : "OK"}</button>
     </div>
 
   </form>

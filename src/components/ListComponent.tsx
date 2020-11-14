@@ -10,7 +10,6 @@ export const ListComponent = (props: {
   });
 
   return <div>
-
     {users.isLoading && <div>loading</div>}
     {users.data && <ul>
       {users.data.map(user => <li>{user.id}: <a href="#" onClick={() => {
